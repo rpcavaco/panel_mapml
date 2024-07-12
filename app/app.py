@@ -4,6 +4,8 @@ import psycopg2
 
 from functools import partial
 
+DEBUG_MODE = True
+
 js_modules = {
     'mapml': 'assets/node_modules/@maps4html/web-map-custom-element/dist/mapml-viewer.js'
 }
@@ -27,10 +29,11 @@ function querySelectorAllShadows(selector, el = document.body) {
   return result.concat(childResults).flat();
 }
 
-alert(p_municip, data);
+alert(op.value + ' ' + lat.text + ' ' + long.text + ' ' + zoom.value);
+//alert(p_municip, data);
 
-//let maps = querySelectorAllShadows('mapml-viewer');
-//maps[0].zoomTo(p_lat,p_long, 10);
+let maps = querySelectorAllShadows('mapml-viewer');
+maps[0].zoomTo(lat.text,long.text, zoom.value);
 """
 
 button = pn.widgets.Button(name="Refresh", icon="refresh", button_type="primary")
@@ -55,26 +58,26 @@ autocomplete = pn.widgets.AutocompleteInput(
     case_sensitive=False, search_strategy='includes',
     placeholder='start writing here ..')
 
-mLat = pn.widgets.StaticText(value='0', width=50, align='center', visible=False)
-mLong = pn.widgets.StaticText(value='0', width=50, align='center')
+tZoom = pn.widgets.TextInput(value='12', visible=DEBUG_MODE)
+tLat = pn.widgets.StaticText(value='0', width=10, visible=DEBUG_MODE)
+tLong = pn.widgets.StaticText(value='0', width=10, visible=DEBUG_MODE)
+
 
 def ac_callback(event):
     if event.new in rawdata.keys():
-        mLat.value = rawdata[event.new][0]
-        mLong.value = rawdata[event.new][1]
+        tLat.value = rawdata[event.new][0]
+        tLong.value = rawdata[event.new][1]
  
-watcher = autocomplete.param.watch(ac_callback, ['value'], onlychanged=False)
+watcher = autocomplete.param.watch(ac_callback, ['value'], onlychanged=True)
 
 #button.js_on_click(args={'p_municip': 'xx' }, code=btn_code)
 
-button.jscallback(clicks="""
-alert(op.value + ' ' + lat.text + ' ' + long.text);
-""", args={'op': autocomplete, 'lat': mLat, 'long': mLong})
+button.jscallback(clicks=btn_code, args={'op': autocomplete, 'lat': tLat, 'long': tLong, 'zoom': tZoom})
 
 
 # data = pd.DataFrame(rawdata)
 
-leftcol = pn.Column('## Choose a municipality', autocomplete, mLat, mLong, button, height=100)
+leftcol = pn.Column('## Choose a municipality', autocomplete, tZoom, tLat, tLong, button, height=100)
 
 mappane_styles = {
     'background-color': '#F6F6F6'
@@ -93,7 +96,6 @@ map_pane = pn.pane.HTML("""
 """, styles=mappane_styles)
 
 flexb = pn.Row(leftcol, map_pane)
-
 
 
 pn.Column("# National Ecological Reserve, Northern Portugal", flexb).servable()
