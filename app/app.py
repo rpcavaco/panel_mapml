@@ -88,4 +88,4 @@ template = pn.template.BootstrapTemplate(title='REN at North')
 template.sidebar.append(leftcol)
 template.main.append("# National Ecological Reserve, Northern Portugal")
 template.main.append(map_pane)
-template.servable();
+template.servable()
