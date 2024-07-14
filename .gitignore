@@ -1,1 +1,6 @@
+.gitignore
 app/assets/node_modules/
+extra/
+lixo/
+run_it.sh
+sss.txt
