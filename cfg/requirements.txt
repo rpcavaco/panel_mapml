@@ -1,4 +1,3 @@
 panel
-pandas
-psycopg2-binary
+
 

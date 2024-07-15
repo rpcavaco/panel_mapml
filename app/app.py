@@ -1,6 +1,5 @@
-# import pandas as pd
+
 import panel as pn
-import psycopg2
 import codecs
 import json
 
